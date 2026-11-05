@@ -61,8 +61,8 @@ GitHub Actions (CI, CodeQL, GHCR images, release-please)
 
 ## How we work
 
-Two developers in two time zones (Sweden 🇸🇪 and India 🇮🇳), one of them available
-2 h/week. The process is sized for that:
+Two developers in two time zones (Sweden 🇸🇪 and India 🇮🇳)
+The process is sized for that:
 
 - **1-week sprints**, each mapped to a milestone, planned on the GitHub Project board
 - **Async stand-ups** in Discussions, plus one 30-minute combined planning/review/retro call
