@@ -1,0 +1,20 @@
+title: "Stand-up YYYY-MM-DD · <your name>"
+labels: ["standup"]
+body:
+  - type: textarea
+    id: done
+    attributes:
+      label: ✅ Since last stand-up I…
+    validations:
+      required: true
+  - type: textarea
+    id: next
+    attributes:
+      label: ⏭️ Next I will…
+    validations:
+      required: true
+  - type: textarea
+    id: blockers
+    attributes:
+      label: 🚧 Blockers / help needed
+      value: None

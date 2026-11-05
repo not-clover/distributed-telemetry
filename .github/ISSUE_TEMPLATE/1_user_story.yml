@@ -1,0 +1,39 @@
+name: 📖 User story
+description: A feature, described from a user's point of view
+title: "As a <role>, I want <capability> so that <benefit>"
+labels: ["type:story", "status:needs-refinement"]
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      description: Who wants what, and why?
+      placeholder: As an operator, I want … so that …
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Testable checklist. The story is done when all of these are ticked.
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: Estimate (story points)
+      options: ["1", "2", "3", "5", "8 (too big, split it)", "Not estimated"]
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options: [agent, collector, detector, cli, api, observability, infra, ci, docs]
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / dependencies

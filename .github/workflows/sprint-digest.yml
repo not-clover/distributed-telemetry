@@ -1,0 +1,47 @@
+# Every Sunday morning, before the sprint call, open an issue that summarises the week:
+# closed issues, merged PRs and open work. This is the input for the review/retro.
+name: Sprint digest
+
+on:
+  schedule:
+    - cron: "0 7 * * 0"   # Sunday 07:00 UTC = 08:00 CET / 12:30 IST
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const since = new Date(Date.now() - 7 * 24 * 3600 * 1000);
+            const day = since.toISOString().slice(0, 10);
+            const { owner, repo } = context.repo;
+            const q = (s) => github.paginate(github.rest.search.issuesAndPullRequests,
+              { q: `repo:${owner}/${repo} ${s}`, per_page: 100 });
+            const [closed, merged, open] = await Promise.all([
+              q(`is:issue is:closed closed:>=${day} -label:sprint-digest`),
+              q(`is:pr is:merged merged:>=${day}`),
+              q(`is:issue is:open -label:sprint-digest -label:icebox`),
+            ]);
+            const pts = (i) => {
+              const m = (i.body || "").match(/Estimate[^\n]*\n+\s*(\d+)/i) || (i.body || "").match(/\*\*Estimate:\*\*\s*(\d+)/);
+              return m ? Number(m[1]) : 0;
+            };
+            const line = (i) => `- #${i.number} ${i.title} (@${i.user.login})`;
+            const donePts = closed.reduce((s, i) => s + pts(i), 0);
+            const body = [
+              `## Week ending ${new Date().toISOString().slice(0, 10)}`,
+              `**Completed:** ${closed.length} issues · **${donePts} points** · ${merged.length} PRs merged`,
+              `### ✅ Closed issues`, closed.map(line).join("\n") || "_none_",
+              `### 🔀 Merged PRs`, merged.map(line).join("\n") || "_none_",
+              `### 📋 Still open (${open.length})`, open.map(line).join("\n") || "_none_",
+              `---`, `Use this in the sprint review. Record velocity in the wiki Sprint page.`,
+            ].join("\n\n");
+            await github.rest.issues.create({ owner, repo,
+              title: `Sprint digest · week ending ${new Date().toISOString().slice(0, 10)}`,
+              body, labels: ["sprint-digest"] });

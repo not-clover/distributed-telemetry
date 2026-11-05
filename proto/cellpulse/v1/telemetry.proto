@@ -1,0 +1,53 @@
+// CellPulse telemetry API, v1.
+// Status: PROPOSED. See docs/adr/0003-grpc-protobuf-contract.md.
+// Any breaking change requires a new package version (cellpulse.v2).
+syntax = "proto3";
+
+package cellpulse.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Ingest and health API exposed by every collector.
+service TelemetryService {
+  // Agents open one long-lived client stream and send a batch every interval.
+  // The collector replies once, when the stream closes.
+  rpc StreamKpis(stream KpiBatch) returns (StreamSummary);
+
+  // Liveness and basic info, used by cellpulse-cli status and health checks.
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+// One sample of radio KPIs for a single cell.
+// Field list to be confirmed by the KPI spike (see backlog).
+message CellKpi {
+  string cell_id = 1;                       // e.g. "site-a/cell-007"
+  google.protobuf.Timestamp observed_at = 2;
+  double dl_throughput_mbps = 3;            // downlink user throughput
+  double ul_throughput_mbps = 4;            // uplink user throughput
+  double prb_utilisation_pct = 5;           // physical resource block usage, 0-100
+  double latency_ms = 6;                    // user-plane latency
+  uint32 active_ues = 7;                    // connected user equipments
+  double call_drop_rate_pct = 8;            // retainability (lower is better)
+  double rrc_success_rate_pct = 9;          // accessibility (higher is better)
+}
+
+// Everything an agent observed during one interval.
+message KpiBatch {
+  string site_id = 1;
+  uint64 sequence = 2;                      // monotonic per agent; used to detect gaps/duplicates
+  google.protobuf.Timestamp sent_at = 3;
+  repeated CellKpi samples = 4;
+}
+
+message StreamSummary {
+  uint64 batches_received = 1;
+  uint64 samples_received = 2;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  string version = 1;
+  uint64 uptime_seconds = 2;
+  repeated string connected_sites = 3;
+}

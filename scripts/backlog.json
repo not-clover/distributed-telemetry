@@ -1,0 +1,137 @@
+{
+  "milestones": [
+    {"title": "Sprint 0 · Foundations", "due": "2026-11-08", "description": "Repo, board, CI and API contract agreed; partner can run the project locally."},
+    {"title": "v0.1 · Walking skeleton", "due": "2026-11-15", "description": "KPIs flow end-to-end: agent → gRPC → collector, all in Docker."},
+    {"title": "v0.2 · Observability", "due": "2026-11-22", "description": "Scaled collectors, Prometheus + Grafana dashboard, CI smoke test."},
+    {"title": "v0.3 · Resilience & intelligence", "due": "2026-11-29", "description": "Fault injection, anomaly detector, no data loss on collector restart."},
+    {"title": "v1.0 · Release", "due": "2026-12-02", "description": "Docs, demo GIF, performance report, v1.0.0 tagged."}
+  ],
+  "issues": [
+    {
+      "title": "Configure Project board views and Sprint iteration field",
+      "type": "task", "owner": "lead", "estimate": 1, "priority": "P1", "component": "infra",
+      "milestone": "Sprint 0 · Foundations",
+      "body": "Finish the parts of the Project board that the API cannot create.\n\n### Acceptance criteria\n- [ ] Iteration field `Sprint` with 1-week iterations starting Mon 9 Nov (plus Sprint 0)\n- [ ] Board view grouped by Status, filtered to the current sprint\n- [ ] Table view 'Backlog' sorted by Priority\n- [ ] Roadmap view by Sprint\n- [ ] Built-in workflows on: item added → Todo, PR merged → Done, item closed → Done, auto-add issues from this repo\n- [ ] Insights chart: burn-up by Estimate for the current Sprint"
+    },
+    {
+      "title": "Spike: research 5G RAN KPIs and choose the ones we simulate",
+      "type": "spike", "owner": "lead", "estimate": 2, "priority": "P1", "component": "agent",
+      "milestone": "Sprint 0 · Foundations",
+      "body": "Timeboxed to 2 h. Decide which radio KPIs each simulated cell emits and their realistic ranges.\n\n### Questions to answer\n- Which KPIs does an operator watch first (accessibility, retainability, throughput, latency, PRB utilisation, active UEs)?\n- What are realistic normal ranges and daily (diurnal) patterns?\n- What does a degraded cell look like for each fault type (outage, congestion, interference)?\n\n### Output\n- [ ] Wiki page `5G-KPI-Glossary` with the chosen KPIs, units and normal ranges\n- [ ] Proto field list confirmed (feeds into the proto review issue)"
+    },
+    {
+      "title": "Review and agree the telemetry.proto API contract (ADR-0003)",
+      "type": "task", "owner": "partner", "estimate": 1, "priority": "P0", "component": "api",
+      "milestone": "Sprint 0 · Foundations",
+      "body": "The proto file is the contract between every component, so both of us must agree it before Sprint 1.\n\n### Acceptance criteria\n- [ ] Partner reviews `proto/cellpulse/v1/telemetry.proto` and leaves at least one PR review comment or approval\n- [ ] KPI fields match the KPI spike output\n- [ ] ADR-0003 status changed from *Proposed* to *Accepted*"
+    },
+    {
+      "title": "Partner onboarding: run the project locally and open a first PR",
+      "type": "task", "owner": "partner", "estimate": 1, "priority": "P0", "component": "docs",
+      "milestone": "Sprint 0 · Foundations",
+      "body": "### Acceptance criteria\n- [ ] Clone the repo, run `make dev` and `make test`, and both pass\n- [ ] Add yourself to `CONTRIBUTORS.md` in a PR that follows the PR template and the Conventional Commit title rule\n- [ ] Post your first async stand-up in Discussions → Standups\n- [ ] Note anything confusing in `CONTRIBUTING.md` as part of the same PR"
+    },
+    {
+      "title": "As an operator, I want an agent that simulates N cells' KPIs so that the system has realistic data",
+      "type": "story", "owner": "lead", "estimate": 3, "priority": "P0", "component": "agent",
+      "milestone": "v0.1 · Walking skeleton",
+      "body": "### Acceptance criteria\n- [ ] `cellpulse-agent --site site-a --cells 10` produces one `CellKpi` per cell per second\n- [ ] Values follow a diurnal curve plus noise, within the ranges in the KPI glossary\n- [ ] Simulation is deterministic given `--seed` (needed for tests)\n- [ ] Unit tests cover ranges and determinism\n\n### Notes\nKeep simulation separate from transport: `simulator.py` is pure logic, `client.py` is gRPC."
+    },
+    {
+      "title": "As a platform engineer, I want a collector gRPC service that ingests streamed KPI batches",
+      "type": "story", "owner": "lead", "estimate": 5, "priority": "P0", "component": "collector",
+      "milestone": "v0.1 · Walking skeleton",
+      "body": "### Acceptance criteria\n- [ ] Implements `TelemetryService.StreamKpis` (client-streaming) and `Health`\n- [ ] Agent streams `KpiBatch` every 1 s; collector acks with count received\n- [ ] Structured JSON logging with site, cell count and batch latency\n- [ ] Integration test starts a collector in-process and streams 100 batches from a test agent\n- [ ] Graceful shutdown on SIGTERM (drains in-flight streams)"
+    },
+    {
+      "title": "Containerise agent and collector; docker compose with 1 collector and 3 sites",
+      "type": "task", "owner": "lead", "estimate": 2, "priority": "P0", "component": "infra",
+      "milestone": "v0.1 · Walking skeleton",
+      "body": "### Acceptance criteria\n- [ ] One multi-stage `Dockerfile`, non-root user, image < 200 MB\n- [ ] `make up` brings up collector + agents `site-a`, `site-b`, `site-c`\n- [ ] Container health checks on the collector\n- [ ] Docker workflow publishes the image to GHCR on merge to main"
+    },
+    {
+      "title": "As a developer, I want `cellpulse-cli status` to show collector health and connected sites",
+      "type": "story", "owner": "partner", "estimate": 2, "priority": "P2", "component": "cli",
+      "milestone": "v0.1 · Walking skeleton",
+      "body": "Owned by partner. Self-contained: it only depends on the proto contract, so it never blocks the main path.\n\n### Acceptance criteria\n- [ ] `cellpulse-cli status --target localhost:50051` prints the collector's version, uptime and connected sites as a table\n- [ ] Exit code 1 with a clear message if the collector is unreachable\n- [ ] Unit test with a fake gRPC server\n\n### Hints\nUse `argparse` (stdlib) and the generated stubs in `cellpulse.api`."
+    },
+    {
+      "title": "As an operator, I want the collector to expose KPIs as Prometheus metrics",
+      "type": "story", "owner": "lead", "estimate": 3, "priority": "P0", "component": "collector",
+      "milestone": "v0.2 · Observability",
+      "body": "### Acceptance criteria\n- [ ] `/metrics` on port 9100 exposes gauges `cellpulse_kpi{site,cell,kpi}`\n- [ ] Self-metrics: `cellpulse_batches_total`, `cellpulse_ingest_latency_seconds` (histogram), `cellpulse_active_streams`\n- [ ] Stale cells are removed from metrics after 60 s of silence\n- [ ] Prometheus container scrapes both collectors"
+    },
+    {
+      "title": "As an operator, I want a Grafana 'RAN Overview' dashboard provisioned automatically",
+      "type": "story", "owner": "lead", "estimate": 3, "priority": "P1", "component": "observability",
+      "milestone": "v0.2 · Observability",
+      "body": "### Acceptance criteria\n- [ ] Dashboard JSON committed in `deploy/grafana/dashboards/` and auto-provisioned\n- [ ] Panels: throughput per site, PRB utilisation heatmap, drop rate top-10 cells, ingest latency p95, collector stream count\n- [ ] Site and cell template variables\n- [ ] Screenshot added to the README"
+    },
+    {
+      "title": "Scale out: 2 collectors with agents load-balanced across them",
+      "type": "story", "owner": "lead", "estimate": 3, "priority": "P1", "component": "collector",
+      "milestone": "v0.2 · Observability",
+      "body": "### Acceptance criteria\n- [ ] `docker compose up --scale collector=2` works\n- [ ] Agents use gRPC `round_robin` load balancing over DNS (`dns:///collector:50051`)\n- [ ] Killing one collector makes its agents reconnect to the other within 5 s\n- [ ] ADR written: why client-side load balancing instead of a proxy"
+    },
+    {
+      "title": "CI: docker compose smoke test",
+      "type": "task", "owner": "lead", "estimate": 1, "priority": "P2", "component": "ci",
+      "milestone": "v0.2 · Observability",
+      "body": "### Acceptance criteria\n- [ ] Workflow job starts the stack, waits for health, and asserts Prometheus has `cellpulse_kpi` series from 3 sites\n- [ ] Job is a required status check on `main`"
+    },
+    {
+      "title": "As a developer, I want `cellpulse-cli load` to generate K virtual cells and report throughput",
+      "type": "story", "owner": "partner", "estimate": 3, "priority": "P2", "component": "cli",
+      "milestone": "v0.2 · Observability",
+      "body": "Owned by partner; may run over into Sprint 3.\n\n### Acceptance criteria\n- [ ] `cellpulse-cli load --cells 1000 --duration 60` streams synthetic batches using asyncio\n- [ ] Prints msgs/s sent, acks received and p50/p95 round-trip latency\n- [ ] `--json` flag for machine-readable output (used in the performance report)"
+    },
+    {
+      "title": "As a tester, I want fault injection in the simulator (outage, congestion, interference)",
+      "type": "story", "owner": "lead", "estimate": 2, "priority": "P1", "component": "agent",
+      "milestone": "v0.3 · Resilience & intelligence",
+      "body": "### Acceptance criteria\n- [ ] `--fault cell-3:congestion@120s` style flag, or a schedule in a YAML file\n- [ ] Each fault changes KPIs as described in the KPI glossary\n- [ ] Ground-truth fault events are logged, so the detector can be scored"
+    },
+    {
+      "title": "As an operator, I want an anomaly detector that flags degraded cells automatically",
+      "type": "story", "owner": "lead", "estimate": 5, "priority": "P0", "component": "detector",
+      "milestone": "v0.3 · Resilience & intelligence",
+      "body": "### Acceptance criteria\n- [ ] Service polls the Prometheus HTTP API every 10 s\n- [ ] Per-cell rolling baseline (EWMA mean/variance) with a z-score threshold; documented in an ADR\n- [ ] Exposes `cellpulse_anomaly{site,cell,kpi}` and logs an event per detection\n- [ ] Precision/recall measured against injected faults and recorded in the wiki\n- [ ] Stretch: compare with scikit-learn IsolationForest"
+    },
+    {
+      "title": "As an operator, I want no data loss when a collector restarts",
+      "type": "story", "owner": "lead", "estimate": 3, "priority": "P1", "component": "agent",
+      "milestone": "v0.3 · Resilience & intelligence",
+      "body": "### Acceptance criteria\n- [ ] Agent buffers up to 60 s of batches in a bounded queue while disconnected\n- [ ] Reconnect uses exponential backoff with jitter\n- [ ] Integration test: kill the collector for 20 s; all buffered batches arrive after restart\n- [ ] Metric `cellpulse_agent_buffer_depth`"
+    },
+    {
+      "title": "Prometheus alert rules for cell down and KPI degradation",
+      "type": "task", "owner": "lead", "estimate": 2, "priority": "P3", "component": "observability",
+      "milestone": "v0.3 · Resilience & intelligence", "extra_labels": ["stretch"],
+      "body": "### Acceptance criteria\n- [ ] `deploy/prometheus/alerts.yml` with CellDown, HighDropRate and AnomalyDetected\n- [ ] `promtool check rules` runs in CI"
+    },
+    {
+      "title": "Performance report: throughput and latency vs number of cells",
+      "type": "task", "owner": "partner", "estimate": 1, "priority": "P1", "component": "docs",
+      "milestone": "v0.3 · Resilience & intelligence",
+      "body": "### Acceptance criteria\n- [ ] Run `cellpulse-cli load` at 100, 1k, 5k and 10k cells against 1 and 2 collectors\n- [ ] Results table + chart on wiki page `Performance`, with hardware noted\n- [ ] One paragraph on the bottleneck found and what would fix it"
+    },
+    {
+      "title": "README polish: demo GIF, architecture diagram, quickstart",
+      "type": "task", "owner": "lead", "estimate": 2, "priority": "P0", "component": "docs",
+      "milestone": "v1.0 · Release",
+      "body": "### Acceptance criteria\n- [ ] A recruiter understands the project in 30 seconds from the top of the README\n- [ ] Demo GIF: compose up → dashboard → inject fault → anomaly flagged\n- [ ] Badges: CI, CodeQL, release, licence\n- [ ] Future work section"
+    },
+    {
+      "title": "Cut v1.0.0 release",
+      "type": "task", "owner": "lead", "estimate": 1, "priority": "P0", "component": "ci",
+      "milestone": "v1.0 · Release",
+      "body": "### Acceptance criteria\n- [ ] Merge the release-please PR to tag v1.0.0 with a generated changelog\n- [ ] Image `ghcr.io/<owner>/distributed-telemetry:1.0.0` published\n- [ ] Release notes include a highlights section written by hand"
+    },
+    {
+      "title": "Project retrospective report",
+      "type": "task", "owner": "lead", "estimate": 2, "priority": "P1", "component": "docs",
+      "milestone": "v1.0 · Release",
+      "body": "### Acceptance criteria\n- [ ] Wiki page `Project-Report`: planned vs delivered points per sprint (velocity chart), what was cut and why, lessons learned working across time zones\n- [ ] Links to all Sprint retro pages\n- [ ] This becomes your interview story, so write it like one"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+name: 🔧 Task
+description: Technical work that is not a user-facing feature (infra, CI, docs, refactoring)
+labels: ["type:task"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs doing
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: Estimate (story points)
+      options: ["1", "2", "3", "5", "Not estimated"]
