@@ -21,3 +21,11 @@ src/cellpulse/v1/*_pb2*.pyi
 .idea/
 .DS_Store
 .env
+
+# C++ build output
+edge-agent/build/
+build/
+cmake-build-*/
+out/
+.vs/
+compile_commands.json

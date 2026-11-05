@@ -32,6 +32,7 @@ jobs:
             collector
             detector
             cli
+            edge-agent
             api
             observability
             deps

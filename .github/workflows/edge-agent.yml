@@ -1,0 +1,42 @@
+name: Edge agent (C++)
+
+on:
+  push:
+    branches: [main]
+    paths: ["edge-agent/**", ".github/workflows/edge-agent.yml"]
+  pull_request:
+    paths: ["edge-agent/**", ".github/workflows/edge-agent.yml"]
+
+concurrency:
+  group: edge-agent-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Build & test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Configure
+        run: cmake -S edge-agent -B edge-agent/build -DEDGE_AGENT_WERROR=ON
+      - name: Build
+        run: cmake --build edge-agent/build --config Debug
+      - name: Test
+        run: ctest --test-dir edge-agent/build -C Debug --output-on-failure
+
+  format:
+    name: clang-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check formatting
+        run: |
+          find edge-agent -path edge-agent/build -prune -o \( -name '*.cpp' -o -name '*.hpp' \) -print0 \
+            | xargs -0 clang-format --dry-run --Werror

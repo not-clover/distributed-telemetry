@@ -1,5 +1,4 @@
 # Reviewers are requested automatically for changes in these paths.
 *                       @not-clover
-/src/cellpulse/cli/     @AnvikaVihaan @not-clover
-/tests/cli/             @AnvikaVihaan @not-clover
+/edge-agent/            @AnvikaVihaan @not-clover
 /proto/                 @not-clover @AnvikaVihaan

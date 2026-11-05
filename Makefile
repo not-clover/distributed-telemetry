@@ -49,3 +49,9 @@ down: ## Stop the stack
 .PHONY: logs
 logs: ## Tail stack logs
 	docker compose -f deploy/docker-compose.yml logs -f
+
+.PHONY: cpp
+cpp: ## Build and test the C++ edge agent
+	cmake -S edge-agent -B edge-agent/build
+	cmake --build edge-agent/build
+	ctest --test-dir edge-agent/build --output-on-failure
