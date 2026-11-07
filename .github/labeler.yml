@@ -10,8 +10,6 @@ component:api:
   - changed-files: [{ any-glob-to-any-file: "proto/**" }]
 component:observability:
   - changed-files: [{ any-glob-to-any-file: "deploy/**" }]
-component:ci:
-  - changed-files: [{ any-glob-to-any-file: ".github/**" }]
 component:docs:
   - changed-files: [{ any-glob-to-any-file: ["docs/**", "*.md"] }]
 component:edge-agent:

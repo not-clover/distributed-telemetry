@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# One image, four entry points: cellpulse-agent | -collector | -detector | -cli
+# One image, three entry points: cellpulse-agent | -collector | -detector
 
 FROM python:3.12-slim AS build
 WORKDIR /src
@@ -21,5 +21,6 @@ COPY --from=build /wheels /wheels
 RUN pip install --no-cache-dir /wheels/*.whl && rm -rf /wheels \
  && useradd --create-home --uid 10001 cellpulse
 USER cellpulse
-EXPOSE 50051 9100
+# 50051: collector gRPC · 9100: collector /metrics · 9101: detector /metrics
+EXPOSE 50051 9100 9101
 CMD ["cellpulse-collector"]

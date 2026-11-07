@@ -32,7 +32,7 @@ body:
     id: component
     attributes:
       label: Component
-      options: [agent, collector, detector, cli, api, observability, infra, ci, docs]
+      options: [agent, collector, detector, api, observability, infra, ci, docs]
   - type: textarea
     id: notes
     attributes:
