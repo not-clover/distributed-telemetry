@@ -13,7 +13,7 @@ service TelemetryService {
   // The collector replies once, when the stream closes.
   rpc StreamKpis(stream KpiBatch) returns (StreamSummary);
 
-  // Liveness and basic info, used by cellpulse-cli status and health checks.
+  // Liveness and basic info, and health checks.
   rpc Health(HealthRequest) returns (HealthResponse);
 }
 

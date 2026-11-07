@@ -9,7 +9,7 @@ import pytest
 import cellpulse
 from cellpulse.v1 import telemetry_pb2
 
-COMPONENTS = ["agent", "collector", "detector", "cli"]
+COMPONENTS = ["agent", "collector", "detector"]
 
 
 def test_version_is_semver() -> None:

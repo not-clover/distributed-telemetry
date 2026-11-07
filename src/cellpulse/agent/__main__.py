@@ -1,7 +1,7 @@
 """Entry point for cellpulse-agent.
 
 Simulates N 5G cells at one site and streams their KPIs to the collectors.
-Not implemented yet: see the agent simulator story in milestone v0.1.
+Not implemented yet
 """
 
 from __future__ import annotations
