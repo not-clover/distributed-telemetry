@@ -40,8 +40,6 @@ flowchart LR
 | `cellpulse-detector` | Rolling-baseline anomaly detection on KPIs | @not-clover |
 | `cellpulse-cli` | `status` and `load` tools for developers | @AnvikaVihaan |
 
-Design decisions are recorded as [Architecture Decision Records](docs/adr).
-
 ## Quickstart
 
 ```bash
@@ -67,7 +65,7 @@ The process is sized for that:
 - **1-week sprints**, each mapped to a milestone, planned on the GitHub Project board
 - **Async stand-ups** in Discussions, plus one 30-minute combined planning/review/retro call
 - **Trunk-based development**: short-lived branches, squash-merged PRs, Conventional Commits
-- Everything is in the open: [sprint retros](../../wiki), [ADRs](docs/adr)
+- Everything is in the open: [sprint retros](../../wiki)
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
