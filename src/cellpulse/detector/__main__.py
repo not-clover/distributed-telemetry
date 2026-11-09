@@ -1,7 +1,7 @@
 """Entry point for cellpulse-detector.
 
 Polls Prometheus and flags anomalous cells.
-Not implemented yet: see the anomaly detector story in milestone v0.3.
+Not implemented yet
 """
 
 from __future__ import annotations

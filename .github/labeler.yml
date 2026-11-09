@@ -4,8 +4,8 @@ component:collector:
   - changed-files: [{ any-glob-to-any-file: "src/cellpulse/collector/**" }]
 component:detector:
   - changed-files: [{ any-glob-to-any-file: "src/cellpulse/detector/**" }]
-component:cli:
-  - changed-files: [{ any-glob-to-any-file: "src/cellpulse/cli/**" }]
+component:ci:
+  - changed-files: [{ any-glob-to-any-file: ".github/**" }]
 component:api:
   - changed-files: [{ any-glob-to-any-file: "proto/**" }]
 component:observability:

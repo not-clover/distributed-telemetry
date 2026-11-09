@@ -16,23 +16,18 @@ make lint
 3. **Commit** using [Conventional Commits](https://www.conventionalcommits.org):
    `feat(collector): stream KPI batches over gRPC`.
 4. **Open a PR early** (draft is fine). Fill in the template and write `Closes #12`.
-5. **CI must be green.** Request review but PR does not need to wait
+5. **CI must be green.** Request review if wanted. 
 6. **Squash-merge.** The PR title becomes the commit on `main` and feeds the changelog.
 
 Allowed types: `feat`, `fix`, `docs`, `test`, `refactor`, `perf`, `build`, `ci`, `chore`.
-Scopes: `agent`, `collector`, `detector`, `api`, `observability`, `deps`, `docs`, `release`.
+Scopes: `agent`, `collector`, `detector`, `edge-agent`, `api`, `observability`, `deps`, `docs`,
+`release`, `docker`, `main`.
 
 ## Code review agreement
 
-- The author merges once CI is green. 
-- Reviews are welcome at any time, including after the merge, label a PR `post-merge-review` if you want a second pair of eyes 
+- The author merges once CI is green.
+- Reviews are welcome at any time if second pair of eyes are needed.
 
 ## Changing the API
 
-`proto/` is the contract between all components. Changes need an ADR or an update to ADR-0003,
-and both developers must approve. Fields are never renumbered or reused.
-
-## Decisions
-
-Significant technical decisions are written as ADRs in `docs/adr/` (copy `0000-template.md`).
-
+`proto/` is the contract between all components. Changes need a ADR update.

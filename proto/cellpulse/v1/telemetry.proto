@@ -1,5 +1,5 @@
 // CellPulse telemetry API, v1.
-// Status: PROPOSED. See docs/adr/0003-grpc-protobuf-contract.md.
+// Status: PROPOSED.
 // Any breaking change requires a new package version (cellpulse.v2).
 syntax = "proto3";
 

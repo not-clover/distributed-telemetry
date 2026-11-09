@@ -1,7 +1,7 @@
 """Entry point for cellpulse-collector.
 
 gRPC ingest service; exposes received KPIs as Prometheus metrics.
-Not implemented yet: see the collector ingest story in milestone v0.1.
+Not implemented yet
 """
 
 from __future__ import annotations
