@@ -1,6 +1,6 @@
 // CellPulse telemetry API, v1.
-// Status: PROPOSED.
 // Any breaking change requires a new package version (cellpulse.v2).
+// Field numbers are never renumbered or reused.
 syntax = "proto3";
 
 package cellpulse.v1;
@@ -18,17 +18,40 @@ service TelemetryService {
 }
 
 // One sample of radio KPIs for a single cell.
-// Field list to be confirmed by the KPI spike (see backlog).
+//
+// Missing data: if a cell has no measurement for an interval, the agent leaves it
+// out of KpiBatch.samples. Every field in a sample is a real measurement, so 0 means
+// "measured zero" (e.g. a sleeping cell), never "unknown".
 message CellKpi {
-  string cell_id = 1;                       // e.g. "site-a/cell-007"
+  // Cell identifier: "<site_id>/cell-<NNN>", e.g. "site-a/cell-007".
+  string cell_id = 1;
+
+  // When the measurement was taken.
   google.protobuf.Timestamp observed_at = 2;
-  double dl_throughput_mbps = 3;            // downlink user throughput
-  double ul_throughput_mbps = 4;            // uplink user throughput
-  double prb_utilisation_pct = 5;           // physical resource block usage, 0-100
-  double latency_ms = 6;                    // user-plane latency
-  uint32 active_ues = 7;                    // connected user equipments
-  double call_drop_rate_pct = 8;            // retainability (lower is better)
-  double rrc_success_rate_pct = 9;          // accessibility (higher is better)
+
+  // Integrity: downlink throughput per user, Mbps. Higher is better.
+  double dl_throughput_mbps = 3;
+
+  // Integrity: uplink throughput per user, Mbps. Higher is better.
+  double ul_throughput_mbps = 4;
+
+  // Utilization: share of physical resource blocks (radio capacity) in use, 0-100 %.
+  double prb_utilisation_pct = 5;
+
+  // Integrity: user-plane latency, ms. Lower is better.
+  double latency_ms = 6;
+
+  // Utilization: number of connected devices (user equipments).
+  uint32 active_ues = 7;
+
+  // Retainability: share of connections that dropped, 0-100 %. Lower is better.
+  double call_drop_rate_pct = 8;
+
+  // Accessibility: share of connection setups that succeeded, 0-100 %. Higher is better.
+  double rrc_success_rate_pct = 9;
+
+  // Radio quality: signal-to-interference-plus-noise ratio (SINR), dB. Higher is better.
+  double sinr_db = 10;
 }
 
 // Everything an agent observed during one interval.
