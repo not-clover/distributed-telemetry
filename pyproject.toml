@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cellpulse"
-version = "0.0.0"  # managed by release-please
+version = "0.1.0"  # managed by release-please
 description = "Distributed telemetry for simulated 5G radio cells"
 readme = "README.md"
 license = "MIT"
