@@ -13,7 +13,7 @@ $(BIN)/activate:
 .PHONY: dev
 dev: $(BIN)/activate ## Create venv, install deps, generate protos, install git hooks
 	$(BIN)/pip install -U pip
-	$(BIN)/pip install -e ".[dev]"
+	$(BIN)/pip install -e ".[dev,ds]"
 	$(MAKE) proto
 	$(BIN)/pre-commit install
 
