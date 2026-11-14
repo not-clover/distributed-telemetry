@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install -e ".[dev]"
+      - run: pip install -e ".[dev,ds]"
       - run: make proto BIN="$(dirname "$(which python)")"
       - run: ruff check --output-format=github .
       - run: ruff format --check .
@@ -41,7 +41,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           cache: pip
-      - run: pip install -e ".[dev]"
+      - run: pip install -e ".[dev,ds]"
       - run: make proto BIN="$(dirname "$(which python)")"
       - run: pytest --junitxml=junit.xml
       - name: Coverage summary

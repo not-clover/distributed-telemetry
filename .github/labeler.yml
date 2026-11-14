@@ -1,5 +1,5 @@
 component:agent:
-  - changed-files: [{ any-glob-to-any-file: "src/cellpulse/agent/**" }]
+  - changed-files: [{ any-glob-to-any-file: ["src/cellpulse/agent/**", "src/cellpulse/simulator/**"] }]
 component:collector:
   - changed-files: [{ any-glob-to-any-file: "src/cellpulse/collector/**" }]
 component:detector:

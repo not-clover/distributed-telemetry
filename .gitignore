@@ -29,3 +29,6 @@ cmake-build-*/
 out/
 .vs/
 compile_commands.json
+# Generated datasets (reproducible from the simulator + seed)
+data/*
+!data/.gitkeep
