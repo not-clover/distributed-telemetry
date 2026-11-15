@@ -39,9 +39,18 @@ def base_curve(hours: FloatArray, is_weekend: NDArray[np.bool_]) -> FloatArray:
     return result
 
 
+KEEP = 0.95
+STEP_STD = 0.01
+
+
 def drifting_noise(n: int, rng: np.random.Generator) -> FloatArray:
     """Return n values of AR(1) noise: 0.95 of the previous value plus a small random step."""
-    raise NotImplementedError
+    steps = rng.normal(0, STEP_STD, size=n)
+    noise = np.zeros(n)
+    noise[0] = steps[0]
+    for i in range(1, n):
+        noise[i] = KEEP * noise[i - 1] + steps[i]
+    return noise
 
 
 def daily_load(n_days: int, interval_s: int, rng: np.random.Generator) -> FloatArray:
