@@ -24,9 +24,19 @@ def bump(hours: FloatArray, centre: float, height: float, width: float) -> Float
     return result
 
 
+BASELINE = 0.12
+
+
 def base_curve(hours: FloatArray, is_weekend: NDArray[np.bool_]) -> FloatArray:
     """Return the noise-free load for each time step: baseline plus bumps."""
-    raise NotImplementedError
+    morning = bump(hours, 8.5, 0.25, 1.5)
+    lunch = bump(hours, 13.0, 0.20, 1.5)
+    evening = bump(hours, 19.5, 0.50, 2.5)
+    afternoon = bump(hours, 15.0, 0.40, 4.0)
+    weekday = BASELINE + morning + lunch + evening
+    weekend = BASELINE + afternoon
+    result: FloatArray = np.where(is_weekend, weekend, weekday)
+    return result
 
 
 def drifting_noise(n: int, rng: np.random.Generator) -> FloatArray:
