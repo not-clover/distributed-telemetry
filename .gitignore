@@ -32,3 +32,5 @@ compile_commands.json
 # Generated datasets (reproducible from the simulator + seed)
 data/*
 !data/.gitkeep
+# Scratch notebooks (experiments, not part of the project)
+notebooks/scratch_*.ipynb
