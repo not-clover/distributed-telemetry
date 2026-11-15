@@ -53,6 +53,17 @@ def drifting_noise(n: int, rng: np.random.Generator) -> FloatArray:
     return noise
 
 
+SECONDS_PER_DAY = 86_400
+
+
 def daily_load(n_days: int, interval_s: int, rng: np.random.Generator) -> FloatArray:
     """Return one load value in [0, 1] per time step for n_days days, starting on a Monday."""
-    raise NotImplementedError
+    steps_per_day = SECONDS_PER_DAY // interval_s
+    n = n_days * steps_per_day
+    step = np.arange(n)
+    hours = (step % steps_per_day) * interval_s / 3600
+    day = step // steps_per_day
+    is_weekend = (day % 7) >= 5
+    load = base_curve(hours, is_weekend) + drifting_noise(n, rng)
+    result: FloatArray = np.clip(load, 0, 1)
+    return result
