@@ -40,6 +40,7 @@ dev = [
 cellpulse-agent = "cellpulse.agent.__main__:main"
 cellpulse-collector = "cellpulse.collector.__main__:main"
 cellpulse-detector = "cellpulse.detector.__main__:main"
+cellpulse-evaluate = "cellpulse.detector.evaluate:main"
 cellpulse-simulate = "cellpulse.simulator.__main__:main"
 
 [tool.hatch.build.targets.wheel]
