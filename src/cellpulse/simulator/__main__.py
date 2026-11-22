@@ -11,7 +11,8 @@ import sys
 from pathlib import Path
 
 from cellpulse import __version__
-from cellpulse.simulator.dataset import simulate
+from cellpulse.simulator.dataset import cell_ids, simulate, time_axis
+from cellpulse.simulator.faults import ground_truth_table, random_faults
 
 log = logging.getLogger("cellpulse.simulator")
 
@@ -25,16 +26,25 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--out", type=Path, default=Path("data/normal.parquet"), help="where to save the dataset"
     )
+    parser.add_argument(
+        "--faults", type=int, default=0, help="number of sleeping-cell faults to inject"
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
-    df = simulate(n_days=args.days, interval_s=args.interval, seed=args.seed)
+    times = time_axis(args.days, args.interval)
+    faults = random_faults(args.faults, cell_ids(), times, args.seed)
+    df = simulate(n_days=args.days, interval_s=args.interval, seed=args.seed, faults=faults)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(args.out, index=False)
     log.info("wrote %d rows to %s", len(df), args.out)
+    if faults:
+        truth_path = args.out.with_name(f"{args.out.stem}_ground_truth.csv")
+        ground_truth_table(faults).to_csv(truth_path, index=False)
+        log.info("wrote %d faults to %s", len(faults), truth_path)
     return 0
 
 
