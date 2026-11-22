@@ -23,6 +23,7 @@ ds = [
     "pyarrow>=17",
     "matplotlib>=3.9",
     "ipykernel>=6.29",
+    "scikit-learn>=1.5",
 ]
 dev = [
     "grpcio-tools>=1.66",
@@ -64,6 +65,10 @@ exclude = ["src/cellpulse/v1/.*_pb2.*\\.py$"]
 module = ["cellpulse.v1.*", "grpc.*"]
 ignore_missing_imports = true
 ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = ["sklearn.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
